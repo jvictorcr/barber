@@ -1,22 +1,22 @@
 <?php
 require_once "../config/conecta_db.php";
 
-$cpf = '052.684.440-00';
-$consulta = $pdo->prepare("SELECT * FROM login WHERE  cpf = :cpf");
-$consulta->bindParam(':cpf', $cpf);
+$id = '1';
+$consulta = $pdo->prepare("SELECT * FROM usuarios WHERE  id_user = :id_user");
+$consulta->bindParam(':id_user', $id);
 $consulta->execute();
 $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
 
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Barbearia do <?php echo $resultado['nome']; ?></title>
+    <title>Barbearia</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -49,7 +49,7 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
         <div class="d-flex align-items-center justify-content-between">
             <a href="index.html" class="logo d-flex align-items-center">
                 <img src="assets/img/logo.png" alt="">
-                <span class="d-none d-lg-block">Barbearia do <?php echo $resultado['nome']; ?></span>
+                <span class="d-none d-lg-block">Barbearia do <?php echo $resultado['nome_user']; ?></span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
@@ -65,13 +65,13 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                 <li class="nav-item dropdown pe-3">
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <img src="assets/img/profile-img.jpg" class="rounded-circle">
-                        <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $resultado['nome']; ?></span>
+                        <img src="../assets/img/profile-img.jpg" class="rounded-circle">
+                        <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $resultado['nome_user']; ?></span>
                     </a><!-- End Profile Iamge Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
-                            <h6><?php echo $resultado['nome']; ?></h6>
+                            <h6><?php echo $resultado['nome_user']; ?></h6>
                             <span>Barbeiro</span>
                         </li>
                         <li>
@@ -129,29 +129,29 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link " href="index.html">
+                <a class="nav-link " href="index.php">
                     <i class="bi bi-grid"></i>
                     <span>Início</span>
                 </a>
             </li><!-- End Dashboard Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="work.html">
+                <a class="nav-link collapsed" href="atendimentos.php">
                     <i class="bi bi-briefcase"></i>
                     <span>Atendimentos</span>
                 </a>
             </li><!-- End Work Page Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="users-profile.html">
+                <a class="nav-link collapsed" href="perfil.php">
                     <i class="bi bi-person"></i>
-                    <span>Profile</span>
+                    <span>Perfil</span>
                 </a>
             </li><!-- End Profile Page Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-login.html">
+                <a class="nav-link collapsed" href="sair.php">
                     <i class="bi bi-box-arrow-in-right"></i>
-                    <span>Login</span>
+                    <span>Sair</span>
                 </a>
             </li><!-- End Login Page Nav -->
         </ul>
@@ -161,11 +161,11 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Bem-vindo</h1>
+            <h1>Gerencie seus atendimentos</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Início</a></li>
-                    <li class="breadcrumb-item active">Atendimentos</li>
+                    <li class="breadcrumb-item active">Início</a></li>
+                    <li class="breadcrumb-item"><a href="atendimentos.php">Atendimentos</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -741,61 +741,6 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
 
                         </div>
                     </div><!-- End Website Traffic -->
-
-                    <!-- News & Updates Traffic -->
-                    <div class="card">
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body pb-0">
-                            <h5 class="card-title">News &amp; Updates <span>| Today</span></h5>
-
-                            <div class="news">
-                                <div class="post-item clearfix">
-                                    <img src="assets/img/news-1.jpg" alt="">
-                                    <h4><a href="#">Nihil blanditiis at in nihil autem</a></h4>
-                                    <p>Sit recusandae non aspernatur laboriosam. Quia enim eligendi sed ut harum...</p>
-                                </div>
-
-                                <div class="post-item clearfix">
-                                    <img src="assets/img/news-2.jpg" alt="">
-                                    <h4><a href="#">Quidem autem et impedit</a></h4>
-                                    <p>Illo nemo neque maiores vitae officiis cum eum turos elan dries werona nande...</p>
-                                </div>
-
-                                <div class="post-item clearfix">
-                                    <img src="assets/img/news-3.jpg" alt="">
-                                    <h4><a href="#">Id quia et et ut maxime similique occaecati ut</a></h4>
-                                    <p>Fugiat voluptas vero eaque accusantium eos. Consequuntur sed ipsam et totam...</p>
-                                </div>
-
-                                <div class="post-item clearfix">
-                                    <img src="assets/img/news-4.jpg" alt="">
-                                    <h4><a href="#">Laborum corporis quo dara net para</a></h4>
-                                    <p>Qui enim quia optio. Eligendi aut asperiores enim repellendusvel rerum cuder...</p>
-                                </div>
-
-                                <div class="post-item clearfix">
-                                    <img src="assets/img/news-5.jpg" alt="">
-                                    <h4><a href="#">Et dolores corrupti quae illo quod dolor</a></h4>
-                                    <p>Odit ut eveniet modi reiciendis. Atque cupiditate libero beatae dignissimos eius...</p>
-                                </div>
-
-                            </div><!-- End sidebar recent posts-->
-
-                        </div>
-                    </div><!-- End News & Updates -->
-
                 </div><!-- End Right side columns -->
 
             </div>
