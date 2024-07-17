@@ -5,7 +5,7 @@ $id = '1';
 $consulta = $pdo->prepare("SELECT * FROM usuarios WHERE  id_user = :id_user");
 $consulta->bindParam(':id_user', $id);
 $consulta->execute();
-$resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+$resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -26,7 +26,9 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -49,7 +51,7 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
         <div class="d-flex align-items-center justify-content-between">
             <a href="index.html" class="logo d-flex align-items-center">
                 <img src="assets/img/logo.png" alt="">
-                <span class="d-none d-lg-block">Barbearia do <?php echo $resultado['nome_user']; ?></span>
+                <span class="d-none d-lg-block">Barbearia do <?php echo $resultado_user['nome_user']; ?></span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
@@ -66,12 +68,13 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                         <img src="../assets/img/profile-img.jpg" class="rounded-circle">
-                        <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $resultado['nome_user']; ?></span>
+                        <span
+                            class="d-none d-md-block dropdown-toggle ps-2"><?php echo $resultado_user['nome_user']; ?></span>
                     </a><!-- End Profile Iamge Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
-                            <h6><?php echo $resultado['nome_user']; ?></h6>
+                            <h6><?php echo $resultado_user['nome_user']; ?></h6>
                             <span>Barbeiro</span>
                         </li>
                         <li>
@@ -182,12 +185,15 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                             ?>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <form action="#" method="POST" id="form-atendimento">
+                                    <form action="atender.php" method="POST" id="form-atendimento">
+                                        <input type="hidden" name="id_user" value="<?php echo $resultado_user['id_user']; ?>">
                                         <div class="row">
                                             <div class="col-12">
                                                 <div id="select-container">
                                                     <div class="form-group">
-                                                        <label for="tipo1" class="card-title w-100 text-center">Selecione o tipo de atendimento</label>
+                                                        <label for="tipo1"
+                                                            class="card-title w-100 text-center">Selecione o tipo de
+                                                            atendimento</label>
                                                         <select class="form-select" name="tipo[]" id="tipo1">
                                                             <option value="">Serviços oferecidos</option>
                                                             <?php
@@ -204,8 +210,10 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                                         <div class="row">
                                             <div class="col-12" style="text-align: center;">
                                                 <div id="select-container">
-                                                    <label for="tipo1" class="card-title w-100 text-center">Selecione o método de pagamento</label>
-                                                    <select class="form-select" name="tipo[]" id="tipo1">
+                                                    <label for="pagamento"
+                                                        class="card-title w-100 text-center">Selecione o método de
+                                                        pagamento</label>
+                                                    <select class="form-select" name="pagamento" id="pagamento">
                                                         <option value="">Tipos de pagamentos</option>
                                                         <option value="dinheiro">Dinheiro</option>
                                                         <option value="pix">Pix</option>
@@ -217,19 +225,23 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                                         <br>
                                         <div class="row">
                                             <div class="col-12 col-md-4 mb-3">
-                                                <button type="button" class="btn btn-primary w-100" id="add-select">Adicionar campo</button>
+                                                <button type="button" class="btn btn-primary w-100"
+                                                    id="add-select">Adicionar campo</button>
                                             </div>
                                             <div class="col-12 col-md-4 mb-3">
-                                                <button type="reset" class="btn btn-secondary w-100">Limpar campos</button>
+                                                <button type="reset" class="btn btn-secondary w-100">Limpar
+                                                    campos</button>
                                             </div>
                                             <div class="col-12 col-md-4 mb-3">
-                                                <button type="submit" class="btn btn-success w-100">Concluir atendimento</button>
+                                                <button type="submit" class="btn btn-success w-100">Concluir
+                                                    atendimento</button>
                                             </div>
                                         </div>
                                     </form>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="card-title w-100 text-center mb-2">Tipos e valores de atendimentos</label>
+                                    <label class="card-title w-100 text-center mb-2">Tipos e valores de
+                                        atendimentos</label>
                                     <?php
                                     $consulta->execute(); // Executar a consulta novamente para listar os tipos de atendimento
                                     while ($resultado = $consulta->fetch(PDO::FETCH_ASSOC)) {
@@ -249,20 +261,25 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                                                 $icon_class = 'bi bi-scissors'; // Ícone padrão, caso não haja correspondência
                                                 break;
                                         }
-                                    ?>
+                                        ?>
                                         <div class="card mb-3">
                                             <div class="card-body d-flex flex-column flex-md-row align-items-center">
-                                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-light p-3 me-md-3 mt-2 mt-md-0" style="width: 100px; height: 100px;">
+                                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-light p-3 me-md-3 mt-2 mt-md-0"
+                                                    style="width: 100px; height: 100px;">
                                                     <i class="<?php echo $icon_class; ?>" style="font-size: 2rem;"></i>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    <h5 class="card-title text-center"><?php echo $resultado["nome_tipo"]; ?></h5>
-                                                    <p class="card-text"><b>Preço: R$</b> <?php echo $resultado["preco_tipo"]; ?></p>
-                                                    <p class="card-text mt-3 mt-md-0"><b>Descrição: </b><?php echo $resultado["descricao"]; ?></p>
+                                                    <h5 class="card-title text-center">
+                                                        <?php echo $resultado["nome_tipo"]; ?>
+                                                    </h5>
+                                                    <p class="card-text"><b>Preço: R$</b>
+                                                        <?php echo $resultado["preco_tipo"]; ?></p>
+                                                    <p class="card-text mt-3 mt-md-0"><b>Descrição:
+                                                        </b><?php echo $resultado["descricao"]; ?></p>
                                                 </div>
                                             </div>
                                         </div>
-                                    <?php
+                                        <?php
                                     }
                                     ?>
                                 </div>
@@ -291,7 +308,8 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
         </div>
     </footer><!-- End Footer -->
 
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
     <script src="../assets/vendor/apexcharts/apexcharts.min.js"></script>
@@ -305,13 +323,14 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
 
     <!-- Template Main JS File -->
     <script src="../assets/js/main.js"></script>
+    <!-- Script para adicionar e remover campos de seleção -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const addButton = document.getElementById("add-select");
             const selectContainer = document.getElementById("select-container");
             let selectCount = 1; // Contador para os selects adicionados
 
-            addButton.addEventListener("click", function() {
+            addButton.addEventListener("click", function () {
                 if (selectCount < 3) { // Limite de 3 selects
                     selectCount++;
 
@@ -329,21 +348,21 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                     newSelect.setAttribute("name", "tipo[]");
                     newSelect.setAttribute("id", "tipo" + selectCount);
                     newSelect.innerHTML = `
-                    <option value="">Serviços oferecidos</option>
-                    <?php
-                    // Reiniciar a consulta para exibir todas as opções novamente
-                    $consulta->execute();
-                    while ($resultado = $consulta->fetch(PDO::FETCH_ASSOC)) {
-                        echo '<option value="' . $resultado['id_tipo'] . '">' . $resultado['nome_tipo'] . '</option>';
-                    }
-                    ?>
-                `;
+            <option value="">Serviços oferecidos</option>
+            <?php
+            // Reiniciar a consulta para exibir todas as opções novamente
+            $consulta->execute();
+            while ($resultado = $consulta->fetch(PDO::FETCH_ASSOC)) {
+                echo '<option value="' . $resultado['id_tipo'] . '">' . $resultado['nome_tipo'] . '</option>';
+            }
+            ?>
+        `;
 
                     const removeButton = document.createElement("button");
                     removeButton.type = "button";
                     removeButton.classList.add("btn", "btn-danger", "ml-2", "mt-1");
                     removeButton.textContent = "Excluir campo";
-                    removeButton.addEventListener("click", function() {
+                    removeButton.addEventListener("click", function () {
                         selectContainer.removeChild(newSelectGroup);
                         selectCount--;
                     });
@@ -360,5 +379,17 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
     </script>
 
 </body>
+<?php if (isset($_GET['metodo']) && $_GET['metodo'] === 'erro') {
+    echo "<script>alert('Erro no metodo de comunicação!');</script>";
+}
+if (isset($_GET['tipo']) && $_GET['tipo'] === 'erro') {
+    echo "<script>alert('Nenhum serviço foi selecionado!');</script>";
+}
+if (isset($_GET['pagamento']) && $_GET['pagamento'] === 'erro') {
+    echo "<script>alert('Nenhum metodo de pagamento foi selecionado!');</script>";
+}if (isset($_GET['atendimento']) && $_GET['atendimento'] === 'ok') {
+    echo "<script>alert('Atendimento adicionado com sucesso!');</script>";
+}
+ ?>
 
 </html>

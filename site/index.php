@@ -1,6 +1,9 @@
 <?php
 require_once "../config/conecta_db.php";
 
+date_default_timezone_set('America/Sao_Paulo');  // Configura o fuso horário
+
+
 $id = '1';
 $consulta = $pdo->prepare("SELECT * FROM usuarios WHERE  id_user = :id_user");
 $consulta->bindParam(':id_user', $id);
@@ -8,6 +11,105 @@ $consulta->execute();
 $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
 
 ?>
+
+<?php
+// Define o período padrão como 'hoje'
+$periodo = isset($_GET['periodo']) ? $_GET['periodo'] : 'hoje';
+
+// Data atual
+$data_hoje = date('Y-m-d');
+
+// Dados de comparação
+$data_inicio = $data_fim = '';
+$data_inicio_ano_passado = date('Y-01-01');
+$data_fim_ano_passado = date('Y-12-31', strtotime('-1 year'));
+
+// Define as datas com base no período selecionado
+switch ($periodo) {
+    case 'mensal':
+        $data_inicio = date('Y-m-01'); // Primeiro dia do mês
+        $data_fim = date('Y-m-t'); // Último dia do mês
+        $data_inicio_ano_passado = date('Y-' . date('m') . '-01', strtotime('-1 year')); // Primeiro dia do mês do ano passado
+        $data_fim_ano_passado = date('Y-' . date('m') . '-t', strtotime('-1 year')); // Último dia do mês do ano passado
+        break;
+    case 'anual':
+        $data_inicio = date('Y-01-01'); // Primeiro dia do ano
+        $data_fim = date('Y-12-31'); // Último dia do ano
+        $data_inicio_ano_passado = date('Y-01-01', strtotime('-1 year')); // Primeiro dia do ano passado
+        $data_fim_ano_passado = date('Y-12-31', strtotime('-1 year')); // Último dia do ano passado
+        break;
+    case 'hoje':
+    default:
+        $data_inicio = $data_hoje;
+        $data_fim = $data_hoje;
+        break;
+}
+
+// Consulta os atendimentos com base no período selecionado
+$consulta = $pdo->prepare("SELECT COUNT(*) AS total_atendimentos, SUM(preco_ate) AS total_receita FROM atendimentos WHERE DATE(data_ate) BETWEEN ? AND ?");
+$consulta->execute([$data_inicio, $data_fim]);
+$resultado_atendimentos = $consulta->fetch(PDO::FETCH_ASSOC);
+$total_atendimentos = $resultado_atendimentos['total_atendimentos'];
+$total_receita = $resultado_atendimentos['total_receita'];
+
+// Inicializa as variáveis de comparação
+$percentual_atendimentos = 0;
+$percentual_receita = 0;
+$comparacao_atendimentos = '';
+$comparacao_receita = '';
+$classe_comparacao_atendimentos = '';
+$classe_comparacao_receita = '';
+
+// Calcula a comparação apenas para o filtro diário
+if ($periodo === 'hoje') {
+    // Data do dia anterior
+    $data_ontem = date('Y-m-d', strtotime('-1 day', strtotime($data_hoje)));
+
+    // Consulta os atendimentos do dia anterior
+    $consulta_ontem = $pdo->prepare("SELECT COUNT(*) AS total_atendimentos, SUM(preco_ate) AS total_receita FROM atendimentos WHERE DATE(data_ate) = ?");
+    $consulta_ontem->execute([$data_ontem]);
+    $resultado_ontem = $consulta_ontem->fetch(PDO::FETCH_ASSOC);
+    $total_atendimentos_ontem = $resultado_ontem['total_atendimentos'];
+    $total_receita_ontem = $resultado_ontem['total_receita'];
+
+    // Cálculo da variação percentual
+    if ($total_atendimentos_ontem > 0) {
+        $percentual_atendimentos = (($total_atendimentos - $total_atendimentos_ontem) / $total_atendimentos_ontem) * 100;
+        if ($total_atendimentos > $total_atendimentos_ontem) {
+            $classe_comparacao_atendimentos = 'text-success'; // Verde
+            $comparacao_atendimentos = '+' . number_format($percentual_atendimentos, 2) . '%' . ' maior que ontem';
+        } elseif ($total_atendimentos < $total_atendimentos_ontem) {
+            $classe_comparacao_atendimentos = 'text-danger'; // Vermelho
+            $comparacao_atendimentos = number_format($percentual_atendimentos, 2) . '%' . ' menor que ontem';
+        } else {
+            $classe_comparacao_atendimentos = 'text-warning'; // Laranja
+            $comparacao_atendimentos = 'Nenhuma variação em relação a ontem';
+        }
+    } else {
+        $classe_comparacao_atendimentos = $total_atendimentos > 0 ? 'text-success' : 'text-muted';
+        $comparacao_atendimentos = $total_atendimentos > 0 ? 'Hoje teve atendimentos, mas ontem não.' : 'Sem dados de ontem';
+    }
+
+    if ($total_receita_ontem > 0) {
+        $percentual_receita = (($total_receita - $total_receita_ontem) / $total_receita_ontem) * 100;
+        if ($total_receita > $total_receita_ontem) {
+            $classe_comparacao_receita = 'text-success'; // Verde
+            $comparacao_receita = '+' . number_format($percentual_receita, 2) . '%' . ' maior que ontem';
+        } elseif ($total_receita < $total_receita_ontem) {
+            $classe_comparacao_receita = 'text-danger'; // Vermelho
+            $comparacao_receita = number_format($percentual_receita, 2) . '%' . ' menor que ontem';
+        } else {
+            $classe_comparacao_receita = 'text-warning'; // Laranja
+            $comparacao_receita = 'Nenhuma variação em relação a ontem';
+        }
+    } else {
+        $classe_comparacao_receita = $total_receita > 0 ? 'text-success' : 'text-muted';
+        $comparacao_receita = $total_receita > 0 ? 'Hoje teve receita, mas ontem não.' : 'Sem dados de ontem';
+    }
+}
+?>
+
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -26,7 +128,9 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -66,7 +170,8 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                         <img src="../assets/img/profile-img.jpg" class="rounded-circle">
-                        <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $resultado['nome_user']; ?></span>
+                        <span
+                            class="d-none d-md-block dropdown-toggle ps-2"><?php echo $resultado['nome_user']; ?></span>
                     </a><!-- End Profile Iamge Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
@@ -174,35 +279,45 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
             <div class="row">
 
                 <!-- Left side columns -->
-                <div class="col-lg-8">
+                <div class="col-lg-12">
                     <div class="row">
 
                         <!-- Sales Card -->
                         <div class="col-xxl-4 col-md-6">
                             <div class="card info-card sales-card">
-
                                 <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i
+                                            class="bi bi-three-dots"></i></a>
                                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                         <li class="dropdown-header text-start">
                                             <h6>Filter</h6>
                                         </li>
-
-                                        <li><a class="dropdown-item" href="#">Hoje</a></li>
-                                        <li><a class="dropdown-item" href="#">Mensal</a></li>
-                                        <li><a class="dropdown-item" href="#">Anual</a></li>
+                                        <li><a class="dropdown-item" href="?periodo=hoje">Hoje</a></li>
+                                        <li><a class="dropdown-item" href="?periodo=mensal">Mensal</a></li>
+                                        <li><a class="dropdown-item" href="?periodo=anual">Anual</a></li>
                                     </ul>
                                 </div>
 
                                 <div class="card-body">
-                                    <h5 class="card-title">Cortes <span>| Today</span></h5>
+                                    <h5 class="card-title">Cortes <span>| <?php echo ucfirst($periodo); ?></span></h5>
                                     <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <div
+                                            class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-scissors"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>59</h6>
-                                            <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">maior que ontem</span>
+                                            <h6><?php echo $total_atendimentos; ?></h6>
+                                            <!-- Exibe o número total de atendimentos -->
+                                            <?php if ($periodo === 'hoje'): ?>
+                                                <!-- Variação percentual dos atendimentos -->
+                                                <span
+                                                    class="<?php echo $classe_comparacao_atendimentos; ?> small pt-1 fw-bold">
+                                                    <?php echo $comparacao_atendimentos; ?>
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="text-muted small pt-2 ps-1">Comparação disponível apenas para o
+                                                    dia de hoje</span>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -214,29 +329,40 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                             <div class="card info-card revenue-card">
 
                                 <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i
+                                            class="bi bi-three-dots"></i></a>
                                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                         <li class="dropdown-header text-start">
                                             <h6>Filter</h6>
                                         </li>
 
-                                        <li><a class="dropdown-item" href="#">Hoje</a></li>
-                                        <li><a class="dropdown-item" href="#">Mensal</a></li>
-                                        <li><a class="dropdown-item" href="#">Anual</a></li>
+                                        <li><a class="dropdown-item" href="?periodo=hoje">Hoje</a></li>
+                                        <li><a class="dropdown-item" href="?periodo=mensal">Mensal</a></li>
+                                        <li><a class="dropdown-item" href="?periodo=anual">Anual</a></li>
                                     </ul>
                                 </div>
 
                                 <div class="card-body">
-                                    <h5 class="card-title">Renda bruta <span>| Today</span></h5>
+                                    <h5 class="card-title">Renda bruta <span>| <?php echo ucfirst($periodo); ?></span>
+                                    </h5>
 
                                     <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <div
+                                            class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                             <i class="bi bi-currency-dollar"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>$2,180</h6>
-                                            <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">maior que ontem</span>
-
+                                            <h6><?php echo $total_receita; ?></h6>
+                                            <!-- Exibe o número total de atendimentos -->
+                                            <?php if ($periodo === 'hoje'): ?>
+                                                <!-- Variação percentual da receita -->
+                                                <span class="<?php echo $classe_comparacao_receita; ?> small pt-1 fw-bold">
+                                                    <?php echo $comparacao_receita; ?>
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="text-muted small pt-2 ps-1">Comparação disponível apenas para o
+                                                    dia de hoje</span>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -244,114 +370,123 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                             </div>
                         </div><!-- End Revenue Card -->
 
-                        <!-- Customers Card -->
-                        <div class="col-xxl-4 col-xl-12">
+                        <?php
+                        // Data atual
+                        $data_hoje = date('Y-m-d');
 
-                            <div class="card info-card customers-card">
+                        // Define o período para a última semana (últimos 7 dias)
+                        $data_inicio = date('Y-m-d', strtotime('-6 days', strtotime($data_hoje)));
+                        $data_fim = $data_hoje;
 
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>Filter</h6>
-                                        </li>
+                        // Inicializa variáveis para os dados dos gráficos
+                        $atendimentos_data = [];
+                        $labels = [];
 
-                                        <li><a class="dropdown-item" href="#">Today</a></li>
-                                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                                    </ul>
-                                </div>
+                        // Dados diários
+                        $sql = "SELECT DATE(data_ate) as dia, COUNT(*) as atendimentos FROM atendimentos WHERE DATE(data_ate) BETWEEN :data_inicio AND :data_fim GROUP BY DATE(data_ate) ORDER BY DATE(data_ate)";
+                        $consulta = $pdo->prepare($sql);
+                        $consulta->bindValue(':data_inicio', $data_inicio);
+                        $consulta->bindValue(':data_fim', $data_fim);
+                        $consulta->execute();
+                        $resultado = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
-                                <div class="card-body">
-                                    <h5 class="card-title">Atendimentos <span>| Mensal</span></h5>
+                        // Processa os resultados para os gráficos
+                        foreach ($resultado as $linha) {
+                            $labels[] = $linha['dia'];
+                            $atendimentos_data[] = $linha['atendimentos'];
+                        }
 
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-people"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h6>1244</h6>
-                                            <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">maior que mês passado</span>
+                        // Adiciona zeros para datas ausentes na última semana
+                        for ($i = 6; $i >= 0; $i--) {
+                            $data_check = date('Y-m-d', strtotime("-$i days", strtotime($data_hoje)));
+                            if (!in_array($data_check, $labels)) {
+                                $labels[] = $data_check;
+                                $atendimentos_data[] = 0;
+                            }
+                        }
 
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div><!-- End Customers Card -->
-
+                        // Ordena os dados com base nas datas
+                        array_multisort($labels, SORT_ASC, $atendimentos_data);
+                        ?>
                         <!-- Reports -->
                         <div class="col-12">
                             <div class="card">
-
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>Filter</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">Today</a></li>
-                                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                                    </ul>
-                                </div>
-
                                 <div class="card-body">
-                                    <h5 class="card-title">Reports <span>/Today</span></h5>
-
-                                    <!-- Line Chart -->
+                                    <!-- Remove o título do gráfico e qualquer outro conteúdo desnecessário -->
                                     <div id="reportsChart"></div>
 
                                     <script>
                                         document.addEventListener("DOMContentLoaded", () => {
                                             new ApexCharts(document.querySelector("#reportsChart"), {
                                                 series: [{
-                                                    name: 'Sales',
-                                                    data: [31, 40, 28, 51, 42, 82, 56],
-                                                }, {
-                                                    name: 'Revenue',
-                                                    data: [11, 32, 45, 32, 34, 52, 41]
-                                                }, {
-                                                    name: 'Customers',
-                                                    data: [15, 11, 32, 18, 9, 24, 11]
+                                                    name: 'Atendimentos',
+                                                    data: <?php echo json_encode($atendimentos_data); ?>
                                                 }],
                                                 chart: {
                                                     height: 350,
-                                                    type: 'area',
+                                                    type: 'line',
                                                     toolbar: {
                                                         show: false
                                                     },
                                                 },
-                                                markers: {
-                                                    size: 4
-                                                },
-                                                colors: ['#4154f1', '#2eca6a', '#ff771d'],
+                                                colors: ['#4154f1'],
                                                 fill: {
-                                                    type: "gradient",
-                                                    gradient: {
-                                                        shadeIntensity: 1,
-                                                        opacityFrom: 0.3,
-                                                        opacityTo: 0.4,
-                                                        stops: [0, 90, 100]
-                                                    }
+                                                    type: "solid",  // Mudou de gradient para solid
+                                                    colors: ['#4154f1'],  // Define a cor do gráfico
                                                 },
-                                                dataLabels: {
-                                                    enabled: false
+                                                markers: {
+                                                    size: 6,
+                                                    colors: ['#4154f1'],
+                                                    strokeColor: '#ffffff',
+                                                    strokeWidth: 2,
                                                 },
                                                 stroke: {
                                                     curve: 'smooth',
-                                                    width: 2
+                                                    width: 2,
+                                                    colors: ['#4154f1']
                                                 },
                                                 xaxis: {
                                                     type: 'datetime',
-                                                    categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
+                                                    categories: <?php echo json_encode($labels); ?>,
+                                                    tickAmount: 7,
+                                                    labels: {
+                                                        format: 'dd/MM',
+                                                        style: {
+                                                            colors: '#6c757d'
+                                                        }
+                                                    }
+                                                },
+                                                yaxis: {
+                                                    title: {
+                                                        text: 'Atendimentos',
+                                                        style: {
+                                                            color: '#012970'
+                                                        }
+                                                    },
+                                                    labels: {
+                                                        style: {
+                                                            colors: '#6c757d'
+                                                        }
+                                                    }
                                                 },
                                                 tooltip: {
                                                     x: {
-                                                        format: 'dd/MM/yy HH:mm'
+                                                        format: 'dd/MM'
                                                     },
+                                                    y: {
+                                                        formatter: (val) => `${val} atendimentos`,
+                                                    }
+                                                },
+                                                grid: {
+                                                    borderColor: '#e0e0e0',
+                                                    row: {
+                                                        colors: ['#f9f9f9', 'transparent'],
+                                                        opacity: 0.5
+                                                    },
+                                                    column: {
+                                                        colors: ['#f9f9f9', 'transparent'],
+                                                        opacity: 0.5
+                                                    }
                                                 }
                                             }).render();
                                         });
@@ -359,390 +494,11 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
                                     <!-- End Line Chart -->
 
                                 </div>
-
                             </div>
                         </div><!-- End Reports -->
 
-                        <!-- Recent Sales -->
-                        <div class="col-12">
-                            <div class="card recent-sales overflow-auto">
-
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>Filter</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">Today</a></li>
-                                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                                    </ul>
-                                </div>
-
-                                <div class="card-body">
-                                    <h5 class="card-title">Recent Sales <span>| Today</span></h5>
-
-                                    <table class="table table-borderless datatable">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">Customer</th>
-                                                <th scope="col">Product</th>
-                                                <th scope="col">Price</th>
-                                                <th scope="col">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <th scope="row"><a href="#">#2457</a></th>
-                                                <td>Brandon Jacob</td>
-                                                <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                                                <td>$64</td>
-                                                <td><span class="badge bg-success">Approved</span></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#">#2147</a></th>
-                                                <td>Bridie Kessler</td>
-                                                <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                                                <td>$47</td>
-                                                <td><span class="badge bg-warning">Pending</span></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#">#2049</a></th>
-                                                <td>Ashleigh Langosh</td>
-                                                <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                                                <td>$147</td>
-                                                <td><span class="badge bg-success">Approved</span></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#">#2644</a></th>
-                                                <td>Angus Grady</td>
-                                                <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                                                <td>$67</td>
-                                                <td><span class="badge bg-danger">Rejected</span></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#">#2644</a></th>
-                                                <td>Raheem Lehner</td>
-                                                <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                                                <td>$165</td>
-                                                <td><span class="badge bg-success">Approved</span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-
-                            </div>
-                        </div><!-- End Recent Sales -->
-
-                        <!-- Top Selling -->
-                        <div class="col-12">
-                            <div class="card top-selling overflow-auto">
-
-                                <div class="filter">
-                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                        <li class="dropdown-header text-start">
-                                            <h6>Filter</h6>
-                                        </li>
-
-                                        <li><a class="dropdown-item" href="#">Today</a></li>
-                                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                                    </ul>
-                                </div>
-
-                                <div class="card-body pb-0">
-                                    <h5 class="card-title">Top Selling <span>| Today</span></h5>
-
-                                    <table class="table table-borderless">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Preview</th>
-                                                <th scope="col">Product</th>
-                                                <th scope="col">Price</th>
-                                                <th scope="col">Sold</th>
-                                                <th scope="col">Revenue</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <th scope="row"><a href="#"><img src="assets/img/product-1.jpg" alt=""></a></th>
-                                                <td><a href="#" class="text-primary fw-bold">Ut inventore ipsa voluptas nulla</a></td>
-                                                <td>$64</td>
-                                                <td class="fw-bold">124</td>
-                                                <td>$5,828</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#"><img src="assets/img/product-2.jpg" alt=""></a></th>
-                                                <td><a href="#" class="text-primary fw-bold">Exercitationem similique doloremque</a></td>
-                                                <td>$46</td>
-                                                <td class="fw-bold">98</td>
-                                                <td>$4,508</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#"><img src="assets/img/product-3.jpg" alt=""></a></th>
-                                                <td><a href="#" class="text-primary fw-bold">Doloribus nisi exercitationem</a></td>
-                                                <td>$59</td>
-                                                <td class="fw-bold">74</td>
-                                                <td>$4,366</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#"><img src="assets/img/product-4.jpg" alt=""></a></th>
-                                                <td><a href="#" class="text-primary fw-bold">Officiis quaerat sint rerum error</a></td>
-                                                <td>$32</td>
-                                                <td class="fw-bold">63</td>
-                                                <td>$2,016</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#"><img src="assets/img/product-5.jpg" alt=""></a></th>
-                                                <td><a href="#" class="text-primary fw-bold">Sit unde debitis delectus repellendus</a></td>
-                                                <td>$79</td>
-                                                <td class="fw-bold">41</td>
-                                                <td>$3,239</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
-
-                            </div>
-                        </div><!-- End Top Selling -->
-
                     </div>
-                </div><!-- End Left side columns -->
-
-                <!-- Right side columns -->
-                <div class="col-lg-4">
-
-                    <!-- Recent Activity -->
-                    <div class="card">
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Recent Activity <span>| Today</span></h5>
-
-                            <div class="activity">
-
-                                <div class="activity-item d-flex">
-                                    <div class="activite-label">32 min</div>
-                                    <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                                    <div class="activity-content">
-                                        Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
-                                    </div>
-                                </div><!-- End activity item-->
-
-                                <div class="activity-item d-flex">
-                                    <div class="activite-label">56 min</div>
-                                    <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                                    <div class="activity-content">
-                                        Voluptatem blanditiis blanditiis eveniet
-                                    </div>
-                                </div><!-- End activity item-->
-
-                                <div class="activity-item d-flex">
-                                    <div class="activite-label">2 hrs</div>
-                                    <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
-                                    <div class="activity-content">
-                                        Voluptates corrupti molestias voluptatem
-                                    </div>
-                                </div><!-- End activity item-->
-
-                                <div class="activity-item d-flex">
-                                    <div class="activite-label">1 day</div>
-                                    <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
-                                    <div class="activity-content">
-                                        Tempore autem saepe <a href="#" class="fw-bold text-dark">occaecati voluptatem</a> tempore
-                                    </div>
-                                </div><!-- End activity item-->
-
-                                <div class="activity-item d-flex">
-                                    <div class="activite-label">2 days</div>
-                                    <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
-                                    <div class="activity-content">
-                                        Est sit eum reiciendis exercitationem
-                                    </div>
-                                </div><!-- End activity item-->
-
-                                <div class="activity-item d-flex">
-                                    <div class="activite-label">4 weeks</div>
-                                    <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
-                                    <div class="activity-content">
-                                        Dicta dolorem harum nulla eius. Ut quidem quidem sit quas
-                                    </div>
-                                </div><!-- End activity item-->
-
-                            </div>
-
-                        </div>
-                    </div><!-- End Recent Activity -->
-
-                    <!-- Budget Report -->
-                    <div class="card">
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body pb-0">
-                            <h5 class="card-title">Budget Report <span>| This Month</span></h5>
-
-                            <div id="budgetChart" style="min-height: 400px;" class="echart"></div>
-
-                            <script>
-                                document.addEventListener("DOMContentLoaded", () => {
-                                    var budgetChart = echarts.init(document.querySelector("#budgetChart")).setOption({
-                                        legend: {
-                                            data: ['Allocated Budget', 'Actual Spending']
-                                        },
-                                        radar: {
-                                            // shape: 'circle',
-                                            indicator: [{
-                                                    name: 'Sales',
-                                                    max: 6500
-                                                },
-                                                {
-                                                    name: 'Administration',
-                                                    max: 16000
-                                                },
-                                                {
-                                                    name: 'Information Technology',
-                                                    max: 30000
-                                                },
-                                                {
-                                                    name: 'Customer Support',
-                                                    max: 38000
-                                                },
-                                                {
-                                                    name: 'Development',
-                                                    max: 52000
-                                                },
-                                                {
-                                                    name: 'Marketing',
-                                                    max: 25000
-                                                }
-                                            ]
-                                        },
-                                        series: [{
-                                            name: 'Budget vs spending',
-                                            type: 'radar',
-                                            data: [{
-                                                    value: [4200, 3000, 20000, 35000, 50000, 18000],
-                                                    name: 'Allocated Budget'
-                                                },
-                                                {
-                                                    value: [5000, 14000, 28000, 26000, 42000, 21000],
-                                                    name: 'Actual Spending'
-                                                }
-                                            ]
-                                        }]
-                                    });
-                                });
-                            </script>
-
-                        </div>
-                    </div><!-- End Budget Report -->
-
-                    <!-- Website Traffic -->
-                    <div class="card">
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body pb-0">
-                            <h5 class="card-title">Website Traffic <span>| Today</span></h5>
-
-                            <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
-
-                            <script>
-                                document.addEventListener("DOMContentLoaded", () => {
-                                    echarts.init(document.querySelector("#trafficChart")).setOption({
-                                        tooltip: {
-                                            trigger: 'item'
-                                        },
-                                        legend: {
-                                            top: '5%',
-                                            left: 'center'
-                                        },
-                                        series: [{
-                                            name: 'Access From',
-                                            type: 'pie',
-                                            radius: ['40%', '70%'],
-                                            avoidLabelOverlap: false,
-                                            label: {
-                                                show: false,
-                                                position: 'center'
-                                            },
-                                            emphasis: {
-                                                label: {
-                                                    show: true,
-                                                    fontSize: '18',
-                                                    fontWeight: 'bold'
-                                                }
-                                            },
-                                            labelLine: {
-                                                show: false
-                                            },
-                                            data: [{
-                                                    value: 1048,
-                                                    name: 'Search Engine'
-                                                },
-                                                {
-                                                    value: 735,
-                                                    name: 'Direct'
-                                                },
-                                                {
-                                                    value: 580,
-                                                    name: 'Email'
-                                                },
-                                                {
-                                                    value: 484,
-                                                    name: 'Union Ads'
-                                                },
-                                                {
-                                                    value: 300,
-                                                    name: 'Video Ads'
-                                                }
-                                            ]
-                                        }]
-                                    });
-                                });
-                            </script>
-
-                        </div>
-                    </div><!-- End Website Traffic -->
-                </div><!-- End Right side columns -->
-
+                </div>
             </div>
         </section>
 
@@ -762,7 +518,8 @@ $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
         </div>
     </footer><!-- End Footer -->
 
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
     <script src="../assets/vendor/apexcharts/apexcharts.min.js"></script>
