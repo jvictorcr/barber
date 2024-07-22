@@ -159,6 +159,14 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
+        <?php
+        $id = '1';
+        $consulta = $pdo->prepare("SELECT * FROM usuarios WHERE id_user = :id_user");
+        $consulta->bindParam(':id_user', $id);
+        $consulta->execute();
+        $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
+
+        ?>
 
         <div class="pagetitle">
             <h1>Perfil</h1>
@@ -181,10 +189,10 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
                             <h2><?php echo $resultado_user["nome_user"] ?></h2>
                             <h3>Barbeiro</h3>
                             <div class="social-links mt-2">
-                                <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
-                                <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-                                <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-                                <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                                <a href="<?php echo $consulta_user["twitter_user"] ?>" class="twitter"><i class="bi bi-twitter"></i></a>
+                                <a href="<?php echo $consulta_user["facebook_user"] ?>" class="facebook"><i class="bi bi-facebook"></i></a>
+                                <a href="<?php echo $consulta_user["instagram_user"] ?>" class="instagram"><i class="bi bi-instagram"></i></a>
+                                <a href="<?php echo $consulta_user["linkedin_user"] ?>" class="linkedin"><i class="bi bi-linkedin"></i></a>
                             </div>
                         </div>
                     </div>
@@ -212,17 +220,9 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
 
                             </ul>
                             <div class="tab-content pt-2">
-                                <?php
-                                $id = '1';
-                                $consulta = $pdo->prepare("SELECT * FROM usuarios WHERE id_user = :id_user");
-                                $consulta->bindParam(':id_user', $id);
-                                $consulta->execute();
-                                $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
-
-                                ?>
                                 <div class="tab-pane fade show active profile-overview" id="profile-overview">
                                     <h5 class="card-title">Sobre</h5>
-                                    <p class="small fst-italic"><b><?php echo $consulta_user["nome_user"] ?></b> é um mestre na arte da barbearia, com anos de experiência e uma paixão por criar cortes e estilos que destacam o melhor de cada cliente.</p>
+                                    <p class="small fst-italic"><?php echo $consulta_user["descricao_user"] ?> </p>
 
                                     <h5 class="card-title">Detalhes do perfil</h5>
 
@@ -266,7 +266,7 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
                                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                                     <!-- Profile Edit Form -->
-                                    <form>
+                                    <form action="editar_perfil.php" method="POST" id="form-perfil">
                                         <div class="row mb-3">
                                             <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                                             <div class="col-md-8 col-lg-9">
@@ -279,135 +279,93 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                                            <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Nome completo</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="fullName" type="text" class="form-control" id="fullName" value="Kevin Anderson">
+                                                <input name="fullName" type="text" class="form-control" id="fullName" value="<?php echo $consulta_user["nome_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="about" class="col-md-4 col-lg-3 col-form-label">About</label>
+                                            <label for="about" class="col-md-4 col-lg-3 col-form-label">Sobre</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <textarea name="about" class="form-control" id="about" style="height: 100px">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</textarea>
+                                                <textarea name="about" class="form-control" id="about" style="height: 100px"><?php echo $consulta_user["descricao_user"] ?></textarea>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="company" class="col-md-4 col-lg-3 col-form-label">Company</label>
+                                            <label for="company" class="col-md-4 col-lg-3 col-form-label">Barbearia</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="company" type="text" class="form-control" id="company" value="Lueilwitz, Wisoky and Leuschke">
+                                                <input name="company" type="text" class="form-control" id="company" value="<?php echo $consulta_user["barbearia_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="Job" class="col-md-4 col-lg-3 col-form-label">Job</label>
+                                            <label for="Job" class="col-md-4 col-lg-3 col-form-label">Profissão</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="job" type="text" class="form-control" id="Job" value="Web Designer">
+                                                <input name="job" type="text" class="form-control" id="Job" value="<?php echo $consulta_user["profissao_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
+                                            <label for="Country" class="col-md-4 col-lg-3 col-form-label">País</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="country" type="text" class="form-control" id="Country" value="USA">
+                                                <input name="country" type="text" class="form-control" id="Country" value="<?php echo $consulta_user["pais_user"] ?>" readonly>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
+                                            <label for="Address" class="col-md-4 col-lg-3 col-form-label">Endereço</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="address" type="text" class="form-control" id="Address" value="A108 Adam Street, New York, NY 535022">
+                                                <input name="address" type="text" class="form-control" id="Address" value="<?php echo $consulta_user["endereco_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
+                                            <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Celular</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="phone" type="text" class="form-control" id="Phone" value="(436) 486-3538 x29071">
+                                                <input name="phone" type="text" class="form-control" id="Phone" value="<?php echo $consulta_user["celular_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="email" type="email" class="form-control" id="Email" value="k.anderson@example.com">
+                                                <input name="email" type="email" class="form-control" id="Email" value="<?php echo $consulta_user["email_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">Twitter Profile</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="twitter" type="text" class="form-control" id="Twitter" value="https://twitter.com/#">
+                                                <input name="twitter" type="text" class="form-control" id="Twitter" value="<?php echo $consulta_user["twitter_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">Facebook Profile</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="facebook" type="text" class="form-control" id="Facebook" value="https://facebook.com/#">
+                                                <input name="facebook" type="text" class="form-control" id="Facebook" value="<?php echo $consulta_user["facebook_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Instagram Profile</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="instagram" type="text" class="form-control" id="Instagram" value="https://instagram.com/#">
+                                                <input name="instagram" type="text" class="form-control" id="Instagram" value="<?php echo $consulta_user["instagram_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <label for="Linkedin" class="col-md-4 col-lg-3 col-form-label">Linkedin Profile</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="linkedin" type="text" class="form-control" id="Linkedin" value="https://linkedin.com/#">
+                                                <input name="linkedin" type="text" class="form-control" id="Linkedin" value="<?php echo $consulta_user["linkedin_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            <button type="submit" class="btn btn-primary">Salve suas alterações</button>
                                         </div>
                                     </form><!-- End Profile Edit Form -->
-
-                                </div>
-
-                                <div class="tab-pane fade pt-3" id="profile-settings">
-
-                                    <!-- Settings Form -->
-                                    <form>
-
-                                        <div class="row mb-3">
-                                            <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email Notifications</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="changesMade" checked>
-                                                    <label class="form-check-label" for="changesMade">
-                                                        Changes made to your account
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="newProducts" checked>
-                                                    <label class="form-check-label" for="newProducts">
-                                                        Information on new products and services
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="proOffers">
-                                                    <label class="form-check-label" for="proOffers">
-                                                        Marketing and promo offers
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="securityNotify" checked disabled>
-                                                    <label class="form-check-label" for="securityNotify">
-                                                        Security alerts
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                                        </div>
-                                    </form><!-- End settings Form -->
 
                                 </div>
 
@@ -416,28 +374,28 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
                                     <form>
 
                                         <div class="row mb-3">
-                                            <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+                                            <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Senha antiga</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="password" type="password" class="form-control" id="currentPassword">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+                                            <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">Nova senha</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="newpassword" type="password" class="form-control" id="newPassword">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
+                                            <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Repita a senha</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="renewpassword" type="password" class="form-control" id="renewPassword">
                                             </div>
                                         </div>
 
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Change Password</button>
+                                            <button type="submit" class="btn btn-primary">Trocar senha</button>
                                         </div>
                                     </form><!-- End Change Password Form -->
 
