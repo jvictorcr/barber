@@ -1,11 +1,12 @@
 <?php
 require_once "../config/conecta_db.php";
 
+
 $id = '1';
-$consulta = $pdo->prepare("SELECT * FROM usuarios WHERE  id_user = :id_user");
+$consulta = $pdo->prepare("SELECT * FROM usuarios WHERE id_user = :id_user");
 $consulta->bindParam(':id_user', $id);
 $consulta->execute();
-$resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
+$consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -49,7 +50,7 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
         <div class="d-flex align-items-center justify-content-between">
             <a href="index.html" class="logo d-flex align-items-center">
                 <img src="assets/img/logo.png" alt="">
-                <span class="d-none d-lg-block">Barbearia do <?php echo $resultado_user['nome_user']; ?></span>
+                <span class="d-none d-lg-block">Barbearia do <?php echo $consulta_user['nome_user']; ?></span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
@@ -65,13 +66,13 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
                 <li class="nav-item dropdown pe-3">
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <img src="assets/img/profile-img.jpg" class="rounded-circle">
-                        <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $resultado_user['nome_user']; ?></span>
+                        <img src="../assets/img/profile-img.jpg" class="rounded-circle">
+                        <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $consulta_user['nome_user']; ?></span>
                     </a><!-- End Profile Iamge Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
-                            <h6><?php echo $resultado_user['nome']; ?></h6>
+                            <h6><?php echo $consulta_user['nome_user']; ?></h6>
                             <span>Barbeiro</span>
                         </li>
                         <li>
@@ -79,17 +80,11 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                                <i class="bi bi-person"></i>
-                                <span>Meu perfil</span>
-                            </a>
-                        </li>
-                        <li>
                             <hr class="dropdown-divider">
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                            <a class="dropdown-item d-flex align-items-center" href="perfil.php">
                                 <i class="bi bi-gear"></i>
                                 <span>configurações da conta</span>
                             </a>
@@ -99,7 +94,7 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                            <a class="dropdown-item d-flex align-items-center" href="#">
                                 <i class="bi bi-question-circle"></i>
                                 <span>Precisa de ajuda?</span>
                             </a>
@@ -159,15 +154,6 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-        <?php
-        $id = '1';
-        $consulta = $pdo->prepare("SELECT * FROM usuarios WHERE id_user = :id_user");
-        $consulta->bindParam(':id_user', $id);
-        $consulta->execute();
-        $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
-
-        ?>
-
         <div class="pagetitle">
             <h1>Perfil</h1>
             <nav>
@@ -186,7 +172,7 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
                         <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
                             <img src="../assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-                            <h2><?php echo $resultado_user["nome_user"] ?></h2>
+                            <h2><?php echo $consulta_user["nome_user"] ?></h2>
                             <h3>Barbeiro</h3>
                             <div class="social-links mt-2">
                                 <a href="<?php echo $consulta_user["twitter_user"] ?>" class="twitter"><i class="bi bi-twitter"></i></a>
@@ -267,6 +253,7 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
 
                                     <!-- Profile Edit Form -->
                                     <form action="editar_perfil.php" method="POST" id="form-perfil">
+                                        <input type="hidden" name="id_user" value="<?php echo $consulta_user["id_user"] ?>">
                                         <div class="row mb-3">
                                             <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                                             <div class="col-md-8 col-lg-9">
@@ -371,29 +358,21 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
 
                                 <div class="tab-pane fade pt-3" id="profile-change-password">
                                     <!-- Change Password Form -->
-                                    <form>
-
+                                    <form action="editar_senha.php" method="POST" id="form-senha">
+                                        <?php $consulta_user["id_log"]?>
+                                        <input type="hidden" name="id_log" value="<?php echo $consulta_user["id_log"] ?>">
                                         <div class="row mb-3">
                                             <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Senha antiga</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="password" type="password" class="form-control" id="currentPassword">
+                                                <input name="senha_old" type="senha_old" class="form-control" id="senha_old">
                                             </div>
                                         </div>
-
                                         <div class="row mb-3">
                                             <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">Nova senha</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="newpassword" type="password" class="form-control" id="newPassword">
+                                                <input name="senha" type="senha" class="form-control" id="senha">
                                             </div>
                                         </div>
-
-                                        <div class="row mb-3">
-                                            <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Repita a senha</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <input name="renewpassword" type="password" class="form-control" id="renewPassword">
-                                            </div>
-                                        </div>
-
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-primary">Trocar senha</button>
                                         </div>
@@ -442,5 +421,18 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
     <script src="../assets/js/main.js"></script>
 
 </body>
+<?php if (isset($_GET['update']) && $_GET['update'] === 'erro') {
+    echo "<script>alert('Erro ao atualizar informações, tente novamente!');</script>";
+}
+if (isset($_GET['update']) && $_GET['update'] === 'ok') {
+    echo "<script>alert('Informações atualizadas com sucesso!');</script>";
+}
+if (isset($_GET['update_senha']) && $_GET['update_senha'] === 'erro') {
+    echo "<script>alert('Erro ao atualizar a sua senha, tente novamente!');</script>";
+}
+if (isset($_GET['update_senha']) && $_GET['update_senha'] === 'ok') {
+    echo "<script>alert('Senha atualizada com sucesso!');</script>";
+}
+?>
 
 </html>

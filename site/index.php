@@ -182,19 +182,13 @@ if ($periodo === 'hoje') {
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                                <i class="bi bi-person"></i>
-                                <span>Meu perfil</span>
-                            </a>
-                        </li>
+                        
                         <li>
                             <hr class="dropdown-divider">
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                            <a class="dropdown-item d-flex align-items-center" href="perfil.php#profile-edit">
                                 <i class="bi bi-gear"></i>
                                 <span>configurações da conta</span>
                             </a>
@@ -204,7 +198,7 @@ if ($periodo === 'hoje') {
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                            <a class="dropdown-item d-flex align-items-center" href="">
                                 <i class="bi bi-question-circle"></i>
                                 <span>Precisa de ajuda?</span>
                             </a>
