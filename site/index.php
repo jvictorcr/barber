@@ -182,7 +182,7 @@ if ($periodo === 'hoje') {
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        
+
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -239,6 +239,12 @@ if ($periodo === 'hoje') {
                     <span>Atendimentos</span>
                 </a>
             </li><!-- End Work Page Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="gerenciar.php">
+                    <i class="bi bi-gear"></i>
+                    <span>Gerenciar serviços</span>
+                </a>
+            </li><!-- End config Page Nav -->
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="perfil.php">

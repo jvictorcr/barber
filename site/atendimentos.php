@@ -145,6 +145,13 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
             </li><!-- End Work Page Nav -->
 
             <li class="nav-item">
+                <a class="nav-link collapsed" href="gerenciar.php">
+                    <i class="bi bi-gear"></i>
+                    <span>Gerenciar serviços</span>
+                </a>
+            </li><!-- End config Page Nav -->
+
+            <li class="nav-item">
                 <a class="nav-link collapsed" href="perfil.php">
                     <i class="bi bi-person"></i>
                     <span>Perfil</span>
