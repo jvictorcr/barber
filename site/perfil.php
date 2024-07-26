@@ -1,9 +1,11 @@
 <?php
 require_once "../config/conecta_db.php";
+require_once "secure/acesso.php";
 
 
-$id = '1';
-$consulta = $pdo->prepare("SELECT * FROM usuarios WHERE id_user = :id_user");
+
+$id = $_SESSION['id_log'];
+$consulta = $pdo->prepare("SELECT * FROM usuarios WHERE  id_user = :id_user");
 $consulta->bindParam(':id_user', $id);
 $consulta->execute();
 $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
@@ -104,7 +106,7 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="#">
+                            <a class="dropdown-item d-flex align-items-center" href="secure/sair.php">
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Sair</span>
                             </a>

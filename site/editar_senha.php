@@ -1,5 +1,7 @@
 <?php
 require_once "../config/conecta_db.php";
+require_once "secure/acesso.php";
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_log = $_POST["id_log"];

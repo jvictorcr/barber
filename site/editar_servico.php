@@ -1,5 +1,7 @@
 <?php
 require_once "../config/conecta_db.php";
+require_once "secure/acesso.php";
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['id_tipo']) && isset($_POST['nome_tipo']) && isset($_POST['preco_tipo']) && isset($_POST['descricao'])) {

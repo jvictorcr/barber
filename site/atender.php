@@ -1,5 +1,7 @@
 <?php
 require_once "../config/conecta_db.php";
+require_once "secure/acesso.php";
+
 
 date_default_timezone_set('America/Sao_Paulo');  // Configura o fuso horário
 

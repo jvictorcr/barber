@@ -1,5 +1,5 @@
 <?php 
 
-header('Location: site/');
+header('Location: login/');
 
 ?>
