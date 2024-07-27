@@ -6,7 +6,7 @@ if (isset($_GET['chave']) || isset($_GET['cpf'])) {
     $cpf = trim($_GET['cpf']);
     $ip = trim($_GET['ip']);
 
-    $consulta_chave = $pdo->prepare("SELECT COUNT(*) as count FROM login_user WHERE primeiro_acesso = :chave");
+    $consulta_chave = $pdo->prepare("SELECT COUNT(*) as count FROM login WHERE primeiro_acesso_log = :chave");
     $consulta_chave->bindParam(":chave", $chave);
     $consulta_chave->execute();
     $chave_existe = $consulta_chave->fetch(PDO::FETCH_ASSOC);
@@ -14,19 +14,19 @@ if (isset($_GET['chave']) || isset($_GET['cpf'])) {
     if ($chave_existe['count'] > 0) {
 
         $situacao = "Ativo";
-        $primeiro_acesso = $pdo->prepare("UPDATE login_user SET situacao_user = :situacao , primeiro_acesso = NULL WHERE cpf_user = :cpf");
+        $primeiro_acesso = $pdo->prepare("UPDATE login SET situacao_user_log = :situacao , primeiro_acesso_log = NULL WHERE cpf_log = :cpf");
         $primeiro_acesso->bindValue(":situacao", $situacao);
         $primeiro_acesso->bindValue(":cpf", $cpf);
         $primeiro_acesso->execute();
 
-        $consulta_user = $pdo->prepare("SELECT * FROM cadastro_geral_cidadao WHERE cpf_user = :cpf");
+        $consulta_user = $pdo->prepare("SELECT * FROM usuarios WHERE cpf_user = :cpf");
         $consulta_user->bindParam(":cpf", $cpf);
         $consulta_user->execute();
         $resultado_user = $consulta_user->fetch(PDO::FETCH_ASSOC);
 
         $data = date('Y-m-d H:i:s');
         $acao = "Usuário entrou no sistema";
-        $inserir_logs_user = $pdo->prepare("INSERT INTO logs_user (data_logs, acao_logs, user_logs, cpf_logs, nivel_logs, ip_logs) VALUES (:data, :acao, :user, :cpf, :nivel, :ip)");
+        $inserir_logs_user = $pdo->prepare("INSERT INTO logs (data_logs, acao_logs, user_logs, cpf_logs, nivel_logs, ip_logs) VALUES (:data, :acao, :user, :cpf, :nivel, :ip)");
 
         $inserir_logs_user->bindParam(':data', $data);
         $inserir_logs_user->bindParam(':acao', $acao);
@@ -43,7 +43,6 @@ if (isset($_GET['chave']) || isset($_GET['cpf'])) {
         $_SESSION['cpf_user'] = $resultado_user['cpf_user'];
         $_SESSION['email_user'] = $resultado_user['email_user'];
         $_SESSION['nivel_user'] = $resultado_user['nivel_user'];
-        $_SESSION['perfil_user_completo'] = $resultado_user['perfil_user_completo'];
 
         header('Location: ../../site/');
     } else {
