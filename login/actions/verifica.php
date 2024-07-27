@@ -24,12 +24,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<script>alert('Usuário bloqueado! recupere sua senha ou entre em contato com o suporte pelo telefone (54) 3381-9040. Se for seu primeiro acesso, verifique seu Email.'); document.location='../index.php';</script>";
             } else {
                 if (password_verify($senha, $resultado['senha_log'])) {
-                    // zera os erros
                     $update_erro = $pdo->prepare("UPDATE login SET quant_erros_log = 0 WHERE cpf_log = :cpf");
                     $update_erro->bindParam(":cpf", $cpf);
                     $update_erro->execute();
-                    //insere os logs
                     $data = date('Y-m-d H:i:s');
+                    
                     $acao = "Usuário entrou no sistema";
                     $inserir_logs_log = $pdo->prepare("INSERT INTO logs (data_logs, acao_logs, user_logs, cpf_logs, nivel_logs, ip_logs) VALUES (:data, :acao, :log, :cpf, :nivel, :ip)");
 
@@ -59,12 +58,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     header('Location: ../../site/');
                 } else {
 
-                    // Realiza a contagem de vezes que o usuário errou a senha.
                     $update_erro = $pdo->prepare("UPDATE login SET quant_erros_log = quant_erros_log + 1 WHERE cpf_log = :cpf");
                     $update_erro->bindParam(":cpf", $cpf);
                     $update_erro->execute();
 
-                    // Busca a quantidade de vezes que o usuário errou a senha.
                     $consulta_erro = $pdo->prepare("SELECT quant_erros_log FROM login WHERE cpf_log = :cpf");
                     $consulta_erro->bindParam(":cpf", $cpf);
                     $consulta_erro->execute();
@@ -86,7 +83,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
         } else {
-            // CPF não encontrado
             echo "<script>alert('Oops... O CPF não foi encontrado! Tente novamente ou faça o primeiro acesso.'); document.location='../index.php';</script>";
         }
     }

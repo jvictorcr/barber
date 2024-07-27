@@ -141,7 +141,7 @@ if (isset($_POST['btn-login'])) {
               $inserir_logs_user->bindParam(':ip', $ip);
               $inserir_logs_user->execute();
 
-              $contra_chave = "Andreia8899#";
+              $contra_chave = "ZionX" . rand(1000, 9999);
               $chave = password_hash($contra_chave, PASSWORD_DEFAULT);
 
               $primeiro_acesso = $pdo->prepare("UPDATE login SET primeiro_acesso_log = :chave WHERE email_log = :email");
@@ -188,7 +188,7 @@ if (isset($_POST['btn-login'])) {
                   ";
 
                 if (!$mail->send()) {
-                  echo "<script>alert('Erro na solicitação: " . $mail->ErrorInfo . ". Entre em contato com o suporte através do telefone (54) 3381-9040.'); document.location='../index.php';</script>";
+                  echo "<script>alert('Erro na solicitação: " . $mail->ErrorInfo . ". Entre em contato com o suporte através do telefone (54) 99926-0755.'); document.location='../index.php';</script>";
                 } else {
 
                   echo "<script>alert('Um e-mail foi enviado com o link de verificação de primeiro acesso, verifique sua caixa de entrada e/ou spam.'); document.location='../index.php';</script>";

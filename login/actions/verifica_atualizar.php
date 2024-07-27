@@ -6,7 +6,7 @@ if (isset($_POST['btn-altera'])) {
   $chave = trim($_POST['chave']);
 
 
-  $consulta_chave = $pdo->prepare("SELECT COUNT(*) as count FROM login_user WHERE recuperar_user = :chave");
+  $consulta_chave = $pdo->prepare("SELECT COUNT(*) as count FROM login WHERE recuperar_log = :chave");
   $consulta_chave->bindParam(":chave", $chave);
   $consulta_chave->execute();
   $chave_existe = $consulta_chave->fetch(PDO::FETCH_ASSOC);
@@ -27,15 +27,15 @@ if (isset($_POST['btn-altera'])) {
       $senha_cripto = password_hash($senha, PASSWORD_DEFAULT);
 
       try {
-        $update_senha = $pdo->prepare("UPDATE login_user SET senha_user = :senha, recuperar_user = NULL, situacao_user = 'Ativo', quant_erros_user = 0, data_bloc = NULL WHERE recuperar_user = :chave");
+        $update_senha = $pdo->prepare("UPDATE login SET senha_log = :senha, recuperar_log = NULL, situacao_log = 'Ativo', quant_erros_log = 0, data_bloc_log = NULL WHERE recuperar_log = :chave");
         $update_senha->bindParam(":senha", $senha_cripto);
         $update_senha->bindParam(":chave", $chave);
         $update_senha->execute();
 
-        echo "<script>alert('Senha trocada com sucesso! Faça seu login.'); window.location.href='https://pmsoledaders.inf.br/cadastro_geral/login'; </script>";
+        echo "<script>alert('Senha trocada com sucesso! Faça seu login.'); window.location.href='https://zionx.dev.br/barber/login/'; </script>";
       } catch (PDOException $e) {
         $error = $e->getMessage();
-        echo "<script>alert('Oops... Parece que não foi possível atualizar sua senha. Contate o desenvolvedor do sistema pelo número (54) 3381-9040. Erro: $error'); window.location.href='https://pmsoledaders.inf.br/cadastro_geral/login/'; </script>";
+        echo "<script>alert('Oops... Parece que não foi possível atualizar sua senha. Contate o desenvolvedor do sistema pelo número (54) 99926-0755. Erro: $error'); window.location.href='https://zionx.dev.br/barber/login/'; </script>";
       }
     }
   } else {
