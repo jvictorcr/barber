@@ -163,7 +163,7 @@ if (isset($_POST['btn-login'])) {
                 $mail->Password = 'Andreia8899#';
                 $mail->Port = 465;
 
-                $mail->setFrom('admin@zionx.dev.br', 'Administração - ZionX de Soledade/RS');
+                $mail->setFrom('admin@zionx.dev.br', 'Barber Shopp System - By ZionX Techonoly de Soledade/RS');
                 $mail->addReplyTo('jvictorcrs2@gmail.com', 'Admin');
                 $mail->addAddress($email);
                 $mail->addAddress('admin@zionx.dev.br');
@@ -178,7 +178,7 @@ if (isset($_POST['btn-login'])) {
                       <p><a href='https://zionx.dev.br/barber/login/actions/verifica_primeiro_acesso.php?chave=$chave&cpf=$cpf&ip=$ip'>Clique aqui</a> para liberar seu acesso.</p>
                       <span>---------</span>
                       <br>
-                      <span><b>Administração - ZionX de Soledade/RS</b></span>
+                      <span><b>Administração - ZionX Technology</b></span>
                       <br>
                       <span>E-mail: <a href='mailto:admin@zionx.dev.br'><i>admin@zionx.dev.br</i></a></span>
                       <br>

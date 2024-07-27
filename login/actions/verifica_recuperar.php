@@ -13,7 +13,7 @@ if (isset($_POST['btn-trocar'])) {
 
     if ($rowsEmail) {
         $nome = $rowsEmail['nome_log'];
-        $contra_chave = "ZionX" . rand(1000, 9999);
+        $contra_chave = "ZionX-barber-recuper";
         $chave = password_hash($contra_chave, PASSWORD_DEFAULT);
 
         $trocar_senha = $pdo->prepare("UPDATE login SET recuperar_log = :chave WHERE email_log = :email");
@@ -35,7 +35,7 @@ if (isset($_POST['btn-trocar'])) {
             $mail->Password = 'Andreia8899#';
             $mail->Port = 465;
 
-            $mail->setFrom('admin@zionx.dev.br', 'Administração - ZionX de Soledade/RS');
+            $mail->setFrom('admin@zionx.dev.br', 'Barber Shopp System - By ZionX Technology de Soledade/RS');
             $mail->addReplyTo('jvictorcrs2@gmail.com', 'Admin');
             $mail->addAddress($email);
             $mail->addAddress('admin@zionx.dev.br');
@@ -46,14 +46,14 @@ if (isset($_POST['btn-trocar'])) {
             $mail->Subject = 'Alteração de Senha';
             $mail->Body = "
                 
-                <p>Olá, <b>$nome</b>!</p>               
+                <p>Olá, <b>$nome</b>! Obrigado por usar nossos serviços, ficamos felizes em poder te ajudar.</p>               
                 <p><a href='https://zionx.dev.br/barber/login/atualizar.php?chave=$chave'>Clique aqui</a> para alterar sua senha.</p>
                 <br>
                 <span><i>Caso você não tenha solicitado a alteração de senha, ignore este e-mail.</i></span>
                 <br><br>
                 <span>---------</span>
                 <br>
-                <span><b>Administração - ZionX de Soledade/RS</b></span>
+                <span><b>Administração - ZionX Technology</b></span>
                 <br>
                 <span>E-mail: <a href='mailto:admin@zionx.dev.br'><i>admin@zionx.dev.br</i></a></span>
                 <br>
@@ -77,9 +77,9 @@ if (isset($_POST['btn-trocar'])) {
 
                 $inserir_logs_user->bindParam(':data', $data);
                 $inserir_logs_user->bindParam(':acao', $acao);
-                $inserir_logs_user->bindParam(':user', $resultado['nome_user']);
-                $inserir_logs_user->bindParam(':cpf', $resultado['cpf_user']);
-                $inserir_logs_user->bindParam(':nivel', $resultado['nivel_user']);
+                $inserir_logs_user->bindParam(':user', $resultado['nome_log']);
+                $inserir_logs_user->bindParam(':cpf', $resultado['cpf_log']);
+                $inserir_logs_user->bindParam(':nivel', $resultado['nivel_log']);
                 $inserir_logs_user->bindParam(':ip', $ip);
                 $inserir_logs_user->execute();
 
