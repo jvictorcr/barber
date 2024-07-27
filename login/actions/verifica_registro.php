@@ -141,8 +141,62 @@ if (isset($_POST['btn-login'])) {
               $inserir_logs_user->bindParam(':ip', $ip);
               $inserir_logs_user->execute();
 
-              echo "<script>alert('Registro realizado com sucesso! Aguarde sua altorização.'); document.location='../index.php';</script>";
+              $contra_chave = "Andreia8899#";
+              $chave = password_hash($contra_chave, PASSWORD_DEFAULT);
 
+              $primeiro_acesso = $pdo->prepare("UPDATE login SET primeiro_acesso_log = :chave WHERE email_log = :email");
+              $primeiro_acesso->bindValue(":chave", $chave);
+              $primeiro_acesso->bindValue(":email", $email);
+
+              if ($primeiro_acesso->execute()) {
+                require '../assets/PHPMailer/PHPMailerAutoload.php';
+
+                $mail = new PHPMailer();
+                $mail->CharSet = 'UTF-8';
+                $mail->Encoding = 'base64';
+                $mail->isSMTP();
+                $mail->Timeout = 15;
+                $mail->Host = 'mail.zionx.dev.br';
+                $mail->SMTPAuth = true;
+                $mail->SMTPSecure = 'ssl';
+                $mail->Username = 'admin@zionx.dev.br';
+                $mail->Password = 'Andreia8899#';
+                $mail->Port = 465;
+
+                $mail->setFrom('admin@zionx.dev.br', 'Administração - ZionX de Soledade/RS');
+                $mail->addReplyTo('jvictorcrs2@gmail.com', 'Admin');
+                $mail->addAddress($email);
+                $mail->addAddress('admin@zionx.dev.br');
+                $mail->addCC($email, 'Cópia');
+                $mail->addBCC($email, 'Cópia Oculta');
+
+                $mail->isHTML(true);
+                $mail->Subject = 'Primeiro Acesso';
+                $mail->Body = "
+                      
+                      <p>Olá, <b>$nome</b>! Bem-vindo ao Sistema Barber Shopp, faça o primeiro acesso ao link abaixo.</p>               
+                      <p><a href='https://zionx.dev.br/barber/login/actions/verifica_primeiro_acesso.php?chave=$chave&cpf=$cpf&ip=$ip'>Clique aqui</a> para liberar seu acesso.</p>
+                      <span>---------</span>
+                      <br>
+                      <span><b>Administração - ZionX de Soledade/RS</b></span>
+                      <br>
+                      <span>E-mail: <a href='mailto:admin@zionx.dev.br'><i>admin@zionx.dev.br</i></a></span>
+                      <br>
+                      <span>Telefone: <i>+55 (54) 99926-0755</i></span>
+                      <br><br>
+                      <span><i>E-mail gerado automaticamente, não responda.</i></span>
+                  ";
+
+                if (!$mail->send()) {
+                  echo "<script>alert('Erro na solicitação: " . $mail->ErrorInfo . ". Entre em contato com o suporte através do telefone (54) 3381-9040.'); document.location='../index.php';</script>";
+                } else {
+
+                  echo "<script>alert('Um e-mail foi enviado com o link de verificação de primeiro acesso, verifique sua caixa de entrada e/ou spam.'); document.location='../index.php';</script>";
+                }
+
+              } else {
+                echo "<script>alert('Não foi possível realizar o registro!'); document.location='../registro.php';</script>";
+              }
             } else {
               echo "<script>alert('Não foi possível realizar o registro!'); document.location='../registro.php';</script>";
             }
