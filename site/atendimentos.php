@@ -12,7 +12,7 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="utf-8">
@@ -51,9 +51,9 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="index.html" class="logo d-flex align-items-center">
-                <img src="assets/img/logo.png" alt="">
-                <span class="d-none d-lg-block">Barbearia do <?php echo $resultado_user['nome_user']; ?></span>
+            <a href="index.php" class="logo d-flex align-items-center">
+                <img src="../assets/img/download.ico" alt="">
+                <span class="d-none d-lg-block"><?php echo $resultado_user['barbearia_user']; ?></span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
@@ -77,7 +77,7 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6><?php echo $resultado_user['nome_user']; ?></h6>
-                            <span>Barbeiro</span>
+                            <span><?php echo $resultado_user['profissao_user']; ?></span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -114,7 +114,7 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="secure/sair.php">
+                            <a class="dropdown-item d-flex align-items-center" href="sair.php">
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Sair</span>
                             </a>
@@ -195,7 +195,8 @@ $resultado_user = $consulta->fetch(PDO::FETCH_ASSOC);
                             <div class="row">
                                 <div class="col-md-6">
                                     <form action="atender.php" method="POST" id="form-atendimento">
-                                        <input type="hidden" name="id_user" value="<?php echo $resultado_user['id_user']; ?>">
+                                        <input type="hidden" name="id_user"
+                                            value="<?php echo $resultado_user['id_user']; ?>">
                                         <div class="row">
                                             <div class="col-12">
                                                 <div id="select-container">
@@ -396,9 +397,10 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'erro') {
 }
 if (isset($_GET['pagamento']) && $_GET['pagamento'] === 'erro') {
     echo "<script>alert('Nenhum metodo de pagamento foi selecionado!');</script>";
-}if (isset($_GET['atendimento']) && $_GET['atendimento'] === 'ok') {
+}
+if (isset($_GET['atendimento']) && $_GET['atendimento'] === 'ok') {
     echo "<script>alert('Atendimento adicionado com sucesso!');</script>";
 }
- ?>
+?>
 
 </html>

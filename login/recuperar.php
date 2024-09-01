@@ -42,7 +42,7 @@
                             </div>
                             <div class="d-flex">
                                 <div id="card-nome" class="w-100" style="padding-top: 15px;">
-                                    <h3 class="text-center">Barber Shopp</h3>
+                                    <h3 class="text-center">Barber Shopp System</h3>
                                 </div>
                             </div>
                         </div>

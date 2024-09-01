@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <section class="ftco-section" style="margin-top: 50px;">
+    <section class="ftco-section" style="margin-top: 5px;">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-12 col-lg-10">
@@ -27,7 +27,7 @@
                             </div>
                             <div class="d-flex">
                                 <div class="w-100" style="padding-top: 50px;">
-                                    <h3 class="text-center">Barber Shopp</h3>
+                                    <h3 class="text-center">Barber Shopp System</h3>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                                     <button type="submit" name="btn-altera" class="form-control btn btn-primary btn-alter rounded submit px-3">Trocar senha</button>
                                 </div>
                             </form>
-                            <p class="text-center"><a href="https://pmsoledaders.inf.br/ponto/login_web/">Voltar para o login</a></p>
+                            <p class="text-center"><a href="https://zionx.dev.br/barber/login/index.php">Voltar para o login</a></p>
                         </div>
                     </div>
                 </div>

@@ -29,7 +29,9 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
 
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -50,9 +52,9 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="index.html" class="logo d-flex align-items-center">
-                <img src="assets/img/logo.png" alt="">
-                <span class="d-none d-lg-block">Barbearia do <?php echo $consulta_user['nome_user']; ?></span>
+            <a href="index.php" class="logo d-flex align-items-center">
+                <img src="../assets/img/download.ico" alt="">
+                <span class="d-none d-lg-block"><?php echo $consulta_user['barbearia_user']; ?></span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
@@ -69,7 +71,8 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                         <img src="../assets/img/profile-img.jpg" class="rounded-circle">
-                        <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $consulta_user['nome_user']; ?></span>
+                        <span
+                            class="d-none d-md-block dropdown-toggle ps-2"><?php echo $consulta_user['nome_user']; ?></span>
                     </a><!-- End Profile Iamge Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
@@ -106,7 +109,7 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="secure/sair.php">
+                            <a class="dropdown-item d-flex align-items-center" href="sair.php">
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Sair</span>
                             </a>
@@ -184,10 +187,14 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
                             <h2><?php echo $consulta_user["nome_user"] ?></h2>
                             <h3>Barbeiro</h3>
                             <div class="social-links mt-2">
-                                <a href="<?php echo $consulta_user["twitter_user"] ?>" class="twitter"><i class="bi bi-twitter"></i></a>
-                                <a href="<?php echo $consulta_user["facebook_user"] ?>" class="facebook"><i class="bi bi-facebook"></i></a>
-                                <a href="<?php echo $consulta_user["instagram_user"] ?>" class="instagram"><i class="bi bi-instagram"></i></a>
-                                <a href="<?php echo $consulta_user["linkedin_user"] ?>" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                                <a href="<?php echo $consulta_user["twitter_user"] ?>" class="twitter"><i
+                                        class="bi bi-twitter"></i></a>
+                                <a href="<?php echo $consulta_user["facebook_user"] ?>" class="facebook"><i
+                                        class="bi bi-facebook"></i></a>
+                                <a href="<?php echo $consulta_user["instagram_user"] ?>" class="instagram"><i
+                                        class="bi bi-instagram"></i></a>
+                                <a href="<?php echo $consulta_user["linkedin_user"] ?>" class="linkedin"><i
+                                        class="bi bi-linkedin"></i></a>
                             </div>
                         </div>
                     </div>
@@ -202,15 +209,13 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
                             <ul class="nav nav-tabs nav-tabs-bordered">
 
                                 <li class="nav-item">
-                                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Ver informações</button>
+                                    <button class="nav-link active" data-bs-toggle="tab"
+                                        data-bs-target="#profile-overview">Ver informações</button>
                                 </li>
 
                                 <li class="nav-item">
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Editar perfil</button>
-                                </li>
-
-                                <li class="nav-item">
-                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Trocar senha</button>
+                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Editar
+                                        perfil</button>
                                 </li>
 
                             </ul>
@@ -228,12 +233,14 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
 
                                     <div class="row">
                                         <div class="col-lg-3 col-md-4 label">Barbearia</div>
-                                        <div class="col-lg-9 col-md-8"><?php echo $consulta_user["barbearia_user"] ?></div>
+                                        <div class="col-lg-9 col-md-8"><?php echo $consulta_user["barbearia_user"] ?>
+                                        </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-lg-3 col-md-4 label">Profissão</div>
-                                        <div class="col-lg-9 col-md-8"><?php echo $consulta_user["profissao_user"] ?></div>
+                                        <div class="col-lg-9 col-md-8"><?php echo $consulta_user["profissao_user"] ?>
+                                        </div>
                                     </div>
 
                                     <div class="row">
@@ -243,12 +250,14 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
 
                                     <div class="row">
                                         <div class="col-lg-3 col-md-4 label">Endereço</div>
-                                        <div class="col-lg-9 col-md-8"><?php echo $consulta_user["endereco_user"] ?></div>
+                                        <div class="col-lg-9 col-md-8"><?php echo $consulta_user["endereco_user"] ?>
+                                        </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-lg-3 col-md-4 label">Celular</div>
-                                        <div class="col-lg-9 col-md-8"><?php echo $consulta_user["celular_user"] ?></div>
+                                        <div class="col-lg-9 col-md-8"><?php echo $consulta_user["celular_user"] ?>
+                                        </div>
                                     </div>
 
                                     <div class="row">
@@ -262,99 +271,123 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
 
                                     <!-- Profile Edit Form -->
                                     <form action="editar_perfil.php" method="POST" id="form-perfil">
-                                        <input type="hidden" name="id_user" value="<?php echo $consulta_user["id_user"] ?>">
+                                        <input type="hidden" name="id_user"
+                                            value="<?php echo $consulta_user["id_user"] ?>">
                                         <div class="row mb-3">
-                                            <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+                                            <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile
+                                                Image</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <img src="assets/img/profile-img.jpg" alt="Profile">
                                                 <div class="pt-2">
-                                                    <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
-                                                    <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+                                                    <a href="#" class="btn btn-primary btn-sm"
+                                                        title="Upload new profile image"><i
+                                                            class="bi bi-upload"></i></a>
+                                                    <a href="#" class="btn btn-danger btn-sm"
+                                                        title="Remove my profile image"><i class="bi bi-trash"></i></a>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Nome completo</label>
+                                            <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Nome
+                                                completo</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="fullName" type="text" class="form-control" id="fullName" value="<?php echo $consulta_user["nome_user"] ?>">
+                                                <input name="fullName" type="text" class="form-control" id="fullName"
+                                                    value="<?php echo $consulta_user["nome_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <label for="about" class="col-md-4 col-lg-3 col-form-label">Sobre</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <textarea name="about" class="form-control" id="about" style="height: 100px"><?php echo $consulta_user["descricao_user"] ?></textarea>
+                                                <textarea name="about" class="form-control" id="about"
+                                                    style="height: 100px"><?php echo $consulta_user["descricao_user"] ?></textarea>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="company" class="col-md-4 col-lg-3 col-form-label">Barbearia</label>
+                                            <label for="company"
+                                                class="col-md-4 col-lg-3 col-form-label">Barbearia</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="company" type="text" class="form-control" id="company" value="<?php echo $consulta_user["barbearia_user"] ?>">
+                                                <input name="company" type="text" class="form-control" id="company"
+                                                    value="<?php echo $consulta_user["barbearia_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <label for="Job" class="col-md-4 col-lg-3 col-form-label">Profissão</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="job" type="text" class="form-control" id="Job" value="<?php echo $consulta_user["profissao_user"] ?>">
+                                                <input name="job" type="text" class="form-control" id="Job"
+                                                    value="<?php echo $consulta_user["profissao_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <label for="Country" class="col-md-4 col-lg-3 col-form-label">País</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="country" type="text" class="form-control" id="Country" value="<?php echo $consulta_user["pais_user"] ?>" readonly>
+                                                <input name="country" type="text" class="form-control" id="Country"
+                                                    value="<?php echo $consulta_user["pais_user"] ?>" readonly>
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="Address" class="col-md-4 col-lg-3 col-form-label">Endereço</label>
+                                            <label for="Address"
+                                                class="col-md-4 col-lg-3 col-form-label">Endereço</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="address" type="text" class="form-control" id="Address" value="<?php echo $consulta_user["endereco_user"] ?>">
+                                                <input name="address" type="text" class="form-control" id="Address"
+                                                    value="<?php echo $consulta_user["endereco_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Celular</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="phone" type="text" class="form-control" id="Phone" value="<?php echo $consulta_user["celular_user"] ?>">
+                                                <input name="phone" type="text" class="form-control" id="Phone"
+                                                    value="<?php echo $consulta_user["celular_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
                                             <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="email" type="email" class="form-control" id="Email" value="<?php echo $consulta_user["email_user"] ?>">
+                                                <input name="email" type="email" class="form-control" id="Email"
+                                                    value="<?php echo $consulta_user["email_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">Twitter Profile</label>
+                                            <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">Twitter
+                                                Profile</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="twitter" type="text" class="form-control" id="Twitter" value="<?php echo $consulta_user["twitter_user"] ?>">
+                                                <input name="twitter" type="text" class="form-control" id="Twitter"
+                                                    value="<?php echo $consulta_user["twitter_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">Facebook Profile</label>
+                                            <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">Facebook
+                                                Profile</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="facebook" type="text" class="form-control" id="Facebook" value="<?php echo $consulta_user["facebook_user"] ?>">
+                                                <input name="facebook" type="text" class="form-control" id="Facebook"
+                                                    value="<?php echo $consulta_user["facebook_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Instagram Profile</label>
+                                            <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Instagram
+                                                Profile</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="instagram" type="text" class="form-control" id="Instagram" value="<?php echo $consulta_user["instagram_user"] ?>">
+                                                <input name="instagram" type="text" class="form-control" id="Instagram"
+                                                    value="<?php echo $consulta_user["instagram_user"] ?>">
                                             </div>
                                         </div>
 
                                         <div class="row mb-3">
-                                            <label for="Linkedin" class="col-md-4 col-lg-3 col-form-label">Linkedin Profile</label>
+                                            <label for="Linkedin" class="col-md-4 col-lg-3 col-form-label">Linkedin
+                                                Profile</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="linkedin" type="text" class="form-control" id="Linkedin" value="<?php echo $consulta_user["linkedin_user"] ?>">
+                                                <input name="linkedin" type="text" class="form-control" id="Linkedin"
+                                                    value="<?php echo $consulta_user["linkedin_user"] ?>">
                                             </div>
                                         </div>
 
@@ -364,31 +397,6 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
                                     </form><!-- End Profile Edit Form -->
 
                                 </div>
-
-                                <div class="tab-pane fade pt-3" id="profile-change-password">
-                                    <!-- Change Password Form -->
-                                    <form action="editar_senha.php" method="POST" id="form-senha">
-                                        <?php $consulta_user["id_log"]?>
-                                        <input type="hidden" name="id_log" value="<?php echo $consulta_user["id_log"] ?>">
-                                        <div class="row mb-3">
-                                            <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Senha antiga</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <input name="senha_old" type="senha_old" class="form-control" id="senha_old">
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">Nova senha</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <input name="senha" type="senha" class="form-control" id="senha">
-                                            </div>
-                                        </div>
-                                        <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Trocar senha</button>
-                                        </div>
-                                    </form><!-- End Change Password Form -->
-
-                                </div>
-
                             </div><!-- End Bordered Tabs -->
 
                         </div>
@@ -414,7 +422,8 @@ $consulta_user = $consulta->fetch(PDO::FETCH_ASSOC);
         </div>
     </footer><!-- End Footer -->
 
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
     <script src="../assets/vendor/apexcharts/apexcharts.min.js"></script>

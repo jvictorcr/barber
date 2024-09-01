@@ -86,7 +86,7 @@ if (isset($_POST['btn-login'])) {
     $email_existe = $verificar_email->fetch(PDO::FETCH_ASSOC);
 
     if ($email_existe['count'] > 0) {
-      echo "<script>alert('O EMAIL informado já está vinculado a uma conta! Use outro email.'); document.location='../index.php';</script>";
+      echo "<script>alert('O EMAIL informado já está vinculado a uma conta! Use outro email.'); document.location='../registro.php';</script>";
     } else {
 
       if (strlen($senha) < 8) {

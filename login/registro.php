@@ -41,7 +41,7 @@
                             </div>
                             <div class="d-flex">
                                 <div class="w-100" style="padding-top: 15px;">
-                                    <h3 class="text-center">Barber Shopp</h3>
+                                    <h3 class="text-center">Barber Shopp System</h3>
                                 </div>
                             </div>
                             <div id="card-nome" class="w-100">
@@ -56,11 +56,11 @@
                                     <h5 class="mb-2 text-center">Criar conta</h5>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <label class="label" for="cpf">Nome do cidadão</label>
+                                    <label class="label" for="cpf">Nome completo</label>
                                     <input id="nome" name="nome" type="text" class="form-control" placeholder="Coloque seu nome" maxlength="100" required>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <label class="label" for="cpf">cpf do cidadão</label>
+                                    <label class="label" for="cpf">cpf pessoal</label>
                                     <input id="cpf" name="cpf" type="text" class="form-control" placeholder="Coloque seu cpf" maxlength="14" required>
                                 </div>
                                 <div class="form-group mb-2">

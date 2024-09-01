@@ -152,9 +152,9 @@ if ($periodo === 'hoje') {
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="index.html" class="logo d-flex align-items-center">
-                <img src="assets/img/logo.png" alt="">
-                <span class="d-none d-lg-block">Barbearia do <?php echo $resultado['nome_user']; ?></span>
+            <a href="index.php" class="logo d-flex align-items-center">
+                <img src="../assets/img/download.ico" alt="">
+                <span class="d-none d-lg-block"><?php echo $resultado['barbearia_user']; ?></span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
@@ -209,7 +209,7 @@ if ($periodo === 'hoje') {
                         </li>
 
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="secure/sair.php">
+                            <a class="dropdown-item d-flex align-items-center" href="sair.php">
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Sair</span>
                             </a>
